@@ -15,7 +15,7 @@ from sklearn.neighbors import KDTree
 
 
 app=Flask(__name__)
-app.config["DEBUG"] = True
+#app.config["DEBUG"] = True
 #load the model
 infile1=open('LGBMClassifier_f2score_is_unbalance.pkl','rb')
 model=pickle.load(infile1)
@@ -115,4 +115,10 @@ def feat_imp(id_client):
     return jsonify(dictionnaire)
 
 
-app.run()
+if __name__ == '__main__':
+    # Threaded option to enable multiple instances for multiple user access support
+    app.run(threaded=True,debug=True, port=8000)
+    #from gevent.pywsgi import WSGIServer
+    #http_server = WSGIServer(("127.0.0.1", 8080), app)
+    #http_server.serve_forever()
+    
