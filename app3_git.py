@@ -15,12 +15,14 @@ from sklearn.neighbors import KDTree
 
 
 app=Flask(__name__)
-#app.config["DEBUG"] = True
+app.config["DEBUG"] = True
 #load the model
 infile1=open('LGBMClassifier_f2score_is_unbalance.pkl','rb')
 model=pickle.load(infile1)
 #load the original data test
 test=pd.read_csv('appli_test_git.csv')
+test.set_index('SK_ID_CURR' ,inplace=True)
+
 columns=test.columns
 
 #load the test dataset after preprocessing and feature engineeing (categorical data is onehot encoded)
@@ -35,7 +37,8 @@ cols_infos = ['CODE_GENDER','NAME_FAMILY_STATUS',
                'AMT_INCOME_TOTAL', 'AMT_CREDIT', 'AMT_ANNUITY', 'NAME_CONTRACT_TYPE'
              ]
 
-infos=data[cols_infos]
+#infos=data[cols_infos]
+infos=test[cols_infos]
 # DEF KDTREE
 
 df_vois = pd.get_dummies(infos.iloc[:,:6])
@@ -117,8 +120,4 @@ def feat_imp(id_client):
 
 if __name__ == '__main__':
     # Threaded option to enable multiple instances for multiple user access support
-    app.run(threaded=True,debug=True, port=8000)
-    #from gevent.pywsgi import WSGIServer
-    #http_server = WSGIServer(("127.0.0.1", 8080), app)
-    #http_server.serve_forever()
-    
+    app.run(threaded=True,debug=True, port=8000)#ici j'ai changé de port pour pouvoir deployer sur le cloud heroku.le port 5000 par defaut est deja pris
